@@ -30,7 +30,8 @@ public class Banco2022 {
         menu += "4 - Alterar conta\n";
         menu += "5 - Depositar em conta\n";
         menu += "6 - Sacar da conta\n";
-        menu += "7 - Sair\n\n";
+        menu += "7 - Transferir para conta\n";
+        menu += "8 - Sair\n\n";
         menu += "Escolha uma opção: ";
         int opcao = 0;
         
@@ -62,8 +63,12 @@ public class Banco2022 {
                     sacarDaConta();
                     break;
                 }
+                case 7:{
+                    transferirParaConta();
+                    break;
+                }
             }
-        }while(opcao < 7);
+        }while(opcao < 8);
         
     }
     
@@ -71,13 +76,16 @@ public class Banco2022 {
         Conta conta = new Conta();
         System.out.print("Informe o número: ");
         conta.setNumero(entrada.next());
-        entrada.nextLine();
-        System.out.print("Informe o titular: ");
-        conta.setTitular(entrada.nextLine());
-        System.out.print("Informe o saldo: ");
-        conta.setSaldo(entrada.nextDouble());
-        
-        banco.add(conta);
+        if (banco.indexOf(conta) < 0){
+            entrada.nextLine();
+            System.out.print("Informe o titular: ");
+            conta.setTitular(entrada.nextLine());
+            System.out.print("Informe o saldo: ");
+            conta.setSaldo(entrada.nextDouble());
+            banco.add(conta);
+        }else{
+            System.out.println("Número de Conta já cadastrado");
+        }
     }
 
     private static void exibirContas() {
@@ -150,6 +158,32 @@ public class Banco2022 {
                 System.out.println("Saque realizado com sucesso");
             }else{
                 System.out.println("Saldo insuficiente");
+            }
+        }
+    }
+
+    private static void transferirParaConta() {
+        Conta origem = new Conta();
+        System.out.print("Informe o número da conta de origem: ");
+        origem.setNumero(entrada.next());
+        int pos_origem = banco.indexOf(origem);
+        if (pos_origem < 0){
+            System.out.println("Conta de origem não encontrada");
+        }else{
+            Conta destino = new Conta();
+            System.out.print("Informe o número da conta de destino: ");
+            destino.setNumero(entrada.next());
+            int pos_destino = banco.indexOf(destino);
+            if (pos_destino < 0){
+                System.out.println("Conta de destino não encontrada");
+            }else{
+                System.out.print("Informe o valor a ser transferido:");
+                double valor = entrada.nextDouble();
+                if (banco.get(pos_origem).transferir(banco.get(pos_destino), valor)){
+                    System.out.println("Transferencia realizada com sucesso");
+                }else{
+                    System.out.println("Saldo insuficiente na conta de origem");
+                }
             }
         }
     }

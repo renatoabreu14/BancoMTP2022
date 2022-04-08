@@ -52,6 +52,15 @@ public class Conta {
         }
     }
     
+    public boolean transferir(Conta destino, double valor){
+        if (this.sacar(valor)){
+            destino.depositar(valor);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
     public String toString(){
         String retorno = "Número: " + this.numero + "\n";
         retorno += "Titular: " + this.titular + "\n";
