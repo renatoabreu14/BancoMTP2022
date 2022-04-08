@@ -39,6 +39,19 @@ public class Conta {
         this.saldo = saldo;
     }
     
+    public void depositar(double valor){
+        this.saldo += valor;
+    }
+    
+    public boolean sacar(double valor){
+        if (this.saldo >= valor){
+            this.saldo -= valor;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
     public String toString(){
         String retorno = "Número: " + this.numero + "\n";
         retorno += "Titular: " + this.titular + "\n";

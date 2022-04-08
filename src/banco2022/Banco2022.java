@@ -28,7 +28,9 @@ public class Banco2022 {
         menu += "2 - Exibir contas\n";
         menu += "3 - Remover conta\n";
         menu += "4 - Alterar conta\n";
-        menu += "5 - Sair\n\n";
+        menu += "5 - Depositar em conta\n";
+        menu += "6 - Sacar da conta\n";
+        menu += "7 - Sair\n\n";
         menu += "Escolha uma opção: ";
         int opcao = 0;
         
@@ -49,61 +51,19 @@ public class Banco2022 {
                     break;
                 }
                 case 4:{
-                    alterarPalavra();
+                    alterarConta();
+                    break;
+                }
+                case 5:{
+                    depositarEmConta();
+                    break;
+                }
+                case 6:{
+                    sacarDaConta();
                     break;
                 }
             }
-        }while(opcao < 5);
-        
-        
-        /*ArrayList<String> palavras = new ArrayList<>();
-        palavras.add("Renato");
-        palavras.add("MTP");
-        palavras.add("BEE");
-        
-        //palavras.remove(1);
-        
-        System.out.print("Informe a palavra a ser alterada: ");
-        String alt = entrada.next();
-        int posicao = palavras.indexOf(alt);
-        if (posicao < 0){
-            System.out.println("Palavra nao encontrada");
-        }else{
-            palavras.set(posicao, "Métodos e Técnicas de Programação");
-        }*/
-        
-        
-        
-        /*for (int i = 0; i < palavras.size(); i++) {
-            System.out.println(palavras.get(i));
-            
-        }*/
-        
-        /*for (String palavra: palavras) {
-            System.out.println(palavra);
-        }*/
-        
-        /*Conta conta1 = new Conta();
-        Conta conta2 = new Conta();
-        
-        System.out.print("Informe o numero da conta1:");
-        conta1.setNumero(entrada.nextLine());
-        System.out.print("Informe o titular da conta1:");
-        conta1.setTitular(entrada.nextLine()) ;
-        System.out.print("Informe o saldo da conta1:");
-        conta1.setSaldo(entrada.nextDouble());
-        
-        entrada.nextLine();
-        
-        System.out.print("Informe o numero da conta2:");
-        conta2.setNumero(entrada.nextLine());
-        System.out.print("Informe o titular da conta2:");
-        conta2.setTitular(entrada.nextLine()) ;
-        System.out.print("Informe o saldo da conta2:");
-        conta2.setSaldo(entrada.nextDouble());
-        
-        System.out.println(conta1.toString());
-        System.out.println(conta2.toString());*/
+        }while(opcao < 7);
         
     }
     
@@ -130,21 +90,67 @@ public class Banco2022 {
         Conta conta = new Conta();
         System.out.print("Informe o número da conta a ser removida: ");
         conta.setNumero(entrada.next());
-        banco.remove(banco.indexOf(conta));
+        int posicao = banco.indexOf(conta);
+        if (posicao < 0){
+            System.out.println("Conta não encontrada");
+        }else{
+            banco.remove(posicao);
+            System.out.println("Conta removida com sucesso");
+        }
     }
     
-    private static void alterarPalavra() {
-        /*System.out.print("Informe a palavra a ser alterada: ");
-        String palavra = entrada.next();
-        int posicao = palavras.indexOf(palavra);
+    private static void alterarConta() {
+        Conta conta = new Conta();
+        System.out.print("Informe o número da conta a ser alterada: ");
+        conta.setNumero(entrada.next());
+        int posicao = banco.indexOf(conta);
         if (posicao < 0){
-            System.out.println("Palavra não encontrada");
+            System.out.println("Conta não encontrada");
         }else{
-            System.out.print("Infore a nova palavra: ");
-            palavra = entrada.next();
-            palavras.set(posicao, palavra);
-        }*/
+            entrada.nextLine();
+            System.out.print("Informe o titular: ");
+            conta.setTitular(entrada.nextLine());
+            System.out.print("Informe o saldo: ");
+            conta.setSaldo(entrada.nextDouble());
+            banco.set(posicao, conta);
+            System.out.println("Conta alterada com sucesso");
+        }
     }
 
-    
+    private static int getNumeroUltimaConta(){
+        return Integer.parseInt(banco.get(banco.size()-1).getNumero());
+    }
+
+    private static void depositarEmConta() {
+        Conta conta = new Conta();
+        System.out.print("Informe o número da conta que deseja efetuar o depósito: ");
+        conta.setNumero(entrada.next());
+        int posicao = banco.indexOf(conta);
+        if (posicao < 0){
+            System.out.println("Conta não encontrada");
+        }else{
+            System.out.print("Informe o valor a ser depositado:");
+            double valor = entrada.nextDouble();
+            banco.get(posicao).depositar(valor);
+            System.out.println("Depósito realizado com sucesso");
+        }
+    }
+
+    private static void sacarDaConta() {
+        Conta conta = new Conta();
+        System.out.print("Informe o número da conta que deseja efetuar o saque: ");
+        conta.setNumero(entrada.next());
+        int posicao = banco.indexOf(conta);
+        if (posicao < 0){
+            System.out.println("Conta não encontrada");
+        }else{
+            System.out.print("Informe o valor a ser sacado:");
+            double valor = entrada.nextDouble();
+            if (banco.get(posicao).sacar(valor)){
+                System.out.println("Saque realizado com sucesso");
+            }else{
+                System.out.println("Saldo insuficiente");
+            }
+        }
+    }
 }
