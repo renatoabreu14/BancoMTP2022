@@ -40,7 +40,7 @@ public class Banco2022 {
             opcao = entrada.nextInt();
             switch(opcao){
                 case 1:{
-                    adicionarConta();
+                    escolherTipoConta();
                     break;
                 }
                 case 2:{
@@ -72,8 +72,52 @@ public class Banco2022 {
         
     }
     
-    public static void adicionarConta(){
-        Conta conta = new Conta();
+    public static void escolherTipoConta(){
+        String menu = "1 - Conta Corrente\n";
+        menu += "2 - Conta Poupança\n";
+        menu += "3 - Voltar\n\n";
+        
+        menu += "Escolha uma opção: ";
+        int opcao = 0;
+        
+        do{
+            System.out.print(menu);
+            opcao = entrada.nextInt();
+            switch(opcao){
+                case 1:{
+                    adicionarContaCorrente();
+                    break;
+                }
+                case 2:{
+                    adicionarContaPoupanca();
+                    break;
+                }
+            }
+            
+        }while(opcao < 3);
+    }
+    
+    public static void adicionarContaCorrente(){
+        ContaCorrente cc = new ContaCorrente();
+        preencherConta(cc);
+        if (cc.getTitular() != null){
+            System.out.print("Informe o limite: ");
+            cc.setLimite(entrada.nextDouble());
+            banco.add(cc);
+        }
+    }
+    
+    public static void adicionarContaPoupanca(){
+        ContaPoupanca cp = new ContaPoupanca();
+        preencherConta(cp);
+        if (cp.getTitular() != null){
+            System.out.print("Informe a variação: ");
+            cp.setVariacao(entrada.nextInt());
+            banco.add(cp);
+        }
+    }
+    
+    private static void preencherConta(Conta conta){
         System.out.print("Informe o número: ");
         conta.setNumero(entrada.next());
         if (banco.indexOf(conta) < 0){
@@ -82,7 +126,6 @@ public class Banco2022 {
             conta.setTitular(entrada.nextLine());
             System.out.print("Informe o saldo: ");
             conta.setSaldo(entrada.nextDouble());
-            banco.add(conta);
         }else{
             System.out.println("Número de Conta já cadastrado");
         }
@@ -93,12 +136,16 @@ public class Banco2022 {
             System.out.println(conta);
         }
     }
+    
+    private static int buscaPosicaoConta(String complemento){
+        ContaCorrente cc = new ContaCorrente();
+        System.out.print("Informe o número da conta"+complemento+": ");
+        cc.setNumero(entrada.next());
+        return banco.indexOf(cc);
+    }
 
     private static void removerConta() {
-        Conta conta = new Conta();
-        System.out.print("Informe o número da conta a ser removida: ");
-        conta.setNumero(entrada.next());
-        int posicao = banco.indexOf(conta);
+        int posicao = buscaPosicaoConta(" a ser removida");
         if (posicao < 0){
             System.out.println("Conta não encontrada");
         }else{
@@ -108,20 +155,32 @@ public class Banco2022 {
     }
     
     private static void alterarConta() {
-        Conta conta = new Conta();
-        System.out.print("Informe o número da conta a ser alterada: ");
-        conta.setNumero(entrada.next());
-        int posicao = banco.indexOf(conta);
+        int posicao = buscaPosicaoConta(" a ser alterada");
         if (posicao < 0){
             System.out.println("Conta não encontrada");
         }else{
-            entrada.nextLine();
-            System.out.print("Informe o titular: ");
-            conta.setTitular(entrada.nextLine());
-            System.out.print("Informe o saldo: ");
-            conta.setSaldo(entrada.nextDouble());
-            banco.set(posicao, conta);
-            System.out.println("Conta alterada com sucesso");
+            Conta conta  = banco.get(posicao);
+            if (conta instanceof ContaCorrente){
+                ContaCorrente cc = (ContaCorrente)conta;
+                System.out.print("Informe o titular: ");
+                cc.setTitular(entrada.nextLine());
+                System.out.print("Informe o saldo: ");
+                cc.setSaldo(entrada.nextDouble());
+                System.out.print("Informe o limite: ");
+                cc.setLimite(entrada.nextDouble());
+                banco.set(posicao, cc);
+                System.out.println("Conta alterada com sucesso");
+            }else{
+                ContaPoupanca cp = (ContaPoupanca)conta;
+                System.out.print("Informe o titular: ");
+                cp.setTitular(entrada.nextLine());
+                System.out.print("Informe o saldo: ");
+                cp.setSaldo(entrada.nextDouble());
+                System.out.print("Informe a variação: ");
+                cp.setVariacao(entrada.nextInt());
+                banco.set(posicao, cp);
+                System.out.println("Conta alterada com sucesso");
+            }
         }
     }
 
@@ -130,10 +189,7 @@ public class Banco2022 {
     }
 
     private static void depositarEmConta() {
-        Conta conta = new Conta();
-        System.out.print("Informe o número da conta que deseja efetuar o depósito: ");
-        conta.setNumero(entrada.next());
-        int posicao = banco.indexOf(conta);
+        int posicao = buscaPosicaoConta(" para depósito");
         if (posicao < 0){
             System.out.println("Conta não encontrada");
         }else{
@@ -145,10 +201,7 @@ public class Banco2022 {
     }
 
     private static void sacarDaConta() {
-        Conta conta = new Conta();
-        System.out.print("Informe o número da conta que deseja efetuar o saque: ");
-        conta.setNumero(entrada.next());
-        int posicao = banco.indexOf(conta);
+        int posicao = buscaPosicaoConta(" que deseja sacar");
         if (posicao < 0){
             System.out.println("Conta não encontrada");
         }else{
@@ -163,17 +216,11 @@ public class Banco2022 {
     }
 
     private static void transferirParaConta() {
-        Conta origem = new Conta();
-        System.out.print("Informe o número da conta de origem: ");
-        origem.setNumero(entrada.next());
-        int pos_origem = banco.indexOf(origem);
+        int pos_origem = buscaPosicaoConta(" de origem");
         if (pos_origem < 0){
             System.out.println("Conta de origem não encontrada");
         }else{
-            Conta destino = new Conta();
-            System.out.print("Informe o número da conta de destino: ");
-            destino.setNumero(entrada.next());
-            int pos_destino = banco.indexOf(destino);
+            int pos_destino = buscaPosicaoConta(" de destino");
             if (pos_destino < 0){
                 System.out.println("Conta de destino não encontrada");
             }else{

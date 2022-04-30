@@ -9,7 +9,7 @@ package banco2022;
  *
  * @author renato
  */
-public class Conta {
+public abstract class Conta {
     
     private String numero;
     private String titular;
@@ -43,14 +43,7 @@ public class Conta {
         this.saldo += valor;
     }
     
-    public boolean sacar(double valor){
-        if (this.saldo >= valor){
-            this.saldo -= valor;
-            return true;
-        }else{
-            return false;
-        }
-    }
+    public abstract boolean sacar(double valor);
     
     public boolean transferir(Conta destino, double valor){
         if (this.sacar(valor)){
